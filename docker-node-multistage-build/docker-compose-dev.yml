@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development # specify stage that we will use
+    user: "node"
+    command: "npm run dev"
+    image: multistage-node
+    container_name: multistage-node
+    environment:
+      - NODE_ENV=production # necessary for express apps' performance optimization
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/srv/node/app # bind-mount to synchronise host and container filesystem
+      - app_node_modules:/srv/node/app/node_modules # for saving node modules from container
+volumes:
+  app_node_modules:

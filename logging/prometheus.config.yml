@@ -1,0 +1,19 @@
+global:
+  # how often prometheus will scrape the data
+  scrape_interval: 15s
+  # how often prometheus will evaluate the rules
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'dev-server'
+    static_configs:
+      - targets: ['10.24.160.40:3200']
+        labels:
+          service: 'home-server'
+          group: 'development'
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'monitor'
+          group: 'production'

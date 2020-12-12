@@ -1,0 +1,8 @@
+{
+  "name": "exports_es6",
+  "version": "1.0.0",
+  "exports": {
+    "./test": "./test.js"
+  },
+  "type": "module"
+}

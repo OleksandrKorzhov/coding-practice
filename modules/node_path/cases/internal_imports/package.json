@@ -1,0 +1,11 @@
+{
+  "name": "internal_imports",
+  "version": "1.0.0",
+  "imports": {
+    "#internal_dependency": {
+      "import": "./internal_dep_es6.js",
+      "require": "./internal_dep_commonjs.cjs"
+    }
+  },
+  "type": "module"
+}

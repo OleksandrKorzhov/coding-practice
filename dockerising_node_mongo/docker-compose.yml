@@ -1,0 +1,73 @@
+version: "3"
+
+# file will be interpolated with variables from '.env' file
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # will be accessible through ARG statements in Dockerfile
+      args:
+        - NODE_CONTAINER_PATH=$NODE_CONTAINER_PATH
+        - DOCKER_NODE_USER=$NODE_USER
+        - DOCKER_NODE_GROUP=$NODE_GROUP
+    image: node_mongo:$BUILD_VERSION
+    container_name: nodejs
+    restart: unless-stopped
+    user: "${NODE_USER}:${NODE_GROUP}"
+    command: npm run start:dev
+    ports:
+      - "4200:3200"
+    working_dir: "${NODE_CONTAINER_PATH}"
+    environment:
+      - MONGO_DB_NAME=$MONGO_DB_NAME
+      - MONGO_APP_USERNAME=$MONGO_APP_USERNAME
+      - MONGO_APP_PASSWORD=$MONGO_APP_PASSWORD
+      - MONGO_USERNAME=$MONGO_APP_USERNAME
+      - MONGO_PASSWORD=$MONGO_APP_PASSWORD
+      - PORT=3200
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_HOST=db
+    volumes:
+      # it creates bind-mount
+      - .:/home/node/app
+      # prevent using internal node modules
+      # if we have node_modules on our machine they
+      # will override node_modules within container
+      - node_modules:/home/node/app/node_modules
+    networks:
+      - dev-net
+    depends_on:
+      - db
+  db:
+    image: mongo:4.1.8-xenial
+    container_name: nodejs_db
+    restart: unless-stopped
+    environment:
+      - MONGO_ROOT_USERNAME=$MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD=$MONGO_ROOT_PASSWORD
+      # will create user specifically for app
+      # bu the use of sh script from docker-entrypoint-initdb.d directory
+      - MONGO_APP_USERNAME=$MONGO_APP_USERNAME
+      - MONGO_APP_PASSWORD=$MONGO_APP_PASSWORD
+      - MONGO_DB_NAME=$MONGO_DB_NAME
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_HOST=db
+      # will create root database user
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_ROOT_PASSWORD
+    volumes:
+      - dbdata:/data/db
+      - ./docker-init.d/:/docker-entrypoint-initdb.d/
+    networks:
+      - dev-net
+    ports:
+      - "27017:$MONGO_PORT"
+networks:
+  dev-net:
+    driver: bridge
+
+volumes:
+  dbdata:
+  node_modules:

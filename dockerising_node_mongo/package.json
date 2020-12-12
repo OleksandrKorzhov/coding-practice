@@ -1,0 +1,23 @@
+{
+  "name": "dockerising_node_mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "await:mongo": "node await-mongo.js",
+    "supervice": "/home/node/app/node_modules/.bin/nodemon server.js",
+    "start:dev": "npm run await:mongo && npm run supervice"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.13"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}

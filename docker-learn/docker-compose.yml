@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  node:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: npm run start:dev
+    image: docker_node_learning
+    container_name: docker_node_learning_cont
+    ports:
+      - "4200:3200"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app_net
+    volumes:
+      - .:/home/node/app
+    depends_on:
+      - db
+  db:
+    image: mongo:4.2.0
+    container_name: awesome_db
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

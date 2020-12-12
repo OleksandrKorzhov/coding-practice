@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  prometheus:
+    build:
+      dockerfile: Dockerfile.prometheus
+      context: .
+    ports:
+      - "$PROMETHEUS_PORT:$PROMETHEUS_PORT"
